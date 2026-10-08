@@ -41,10 +41,19 @@ one-command deployment on air-gapped machines.
 
 | 方向 | 具体在做的事 |
 | :--- | :--- |
-| **LLM 应用工程** | 让模型输出可校验、可重试、可观测，而不是"跑通一次就算完成" |
-| **文档智能** | 表格 OCR 结构化 + 混合检索，把 PDF 与扫描件变成可查询资产 |
+| **多模态文档解析** | PaddleOCR PPStructureV3 版面结构解析 + 多模态大模型理解嵌入图像；Celery 任务链与 chord 并发聚合，Redis Stream 推 WebSocket 回传实时进度 |
+| **RAG 与知识库** | Milvus 向量检索 + 混合召回 + 语义重排，支撑知识问答与文档检索类应用 |
+| **模型接入层** | 多模型（DeepSeek / Qwen / GPT）统一编排，含重试、随机回退与限流处理 |
+| **语音交互与智能外呼** | 电话机器人与大模型对话编排，多模型混合调用，与既有业务系统打通 |
+| **集成与可插拔扩展** | MCP 能力扩展与一键部署，把模型能力接进既有业务系统 |
+| **中后台底座** | OAuth2 + JWT + RBAC 三级权限（菜单 / 按钮 / 数据范围），四层架构 controller → service → dao → entity |
 | **浏览器自动化** | 用 CDP 驱动真实 Chrome，处理重 SPA、登录态复用、需人工监督的场景 |
-| **工程基建** | 开发基座 + Docker 离线部署 + tag 触发的发布流水线 |
+
+### 🏭 落地场景
+
+交付过的项目横跨 **银行、医疗、水务、能源、金融** 等行业，形态包括智能外呼、随访与全病程管理、知识问答、文档解析中台、企业微信集成与内部项目集成平台。
+
+从 POC 验证到生产上线，全流程都做过，包含**内网离线环境**的部署与运维。客户名称受合同约束，此处不具名。
 
 <!--
   ═══════════════════════════════════════════════════════════════
@@ -78,15 +87,25 @@ one-command deployment on air-gapped machines.
 
 每一项都标出它在我手里**实际承担什么**，不只是罗列名字。
 
-**后端 · 接口与异步任务**
+**语言**
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
-![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy_Async-D71F00?style=flat-square&logo=sqlalchemy&logoColor=white)
-![Celery](https://img.shields.io/badge/Celery-37814A?style=flat-square&logo=celery&logoColor=white)
-![Alembic](https://img.shields.io/badge/Alembic-6BA81E?style=flat-square&logo=alembic&logoColor=white)
+![Go](https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Shell](https://img.shields.io/badge/Shell-4EAA25?style=flat-square&logo=gnubash&logoColor=white)
 
-FastAPI 承载业务 API 与 OpenAPI 文档 · SQLAlchemy 全异步访问数据库 · Celery 跑文档解析这类长任务 · Alembic 管生产库迁移
+Python 是主力 · Go 写网关与高并发小服务 · TypeScript 写前端与工具脚本 · Shell 做部署与运维
+
+**后端 · 接口、异步任务与权限**
+
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy_2.0_Async-D71F00?style=flat-square&logo=sqlalchemy&logoColor=white)
+![Alembic](https://img.shields.io/badge/Alembic-6BA81E?style=flat-square&logo=alembic&logoColor=white)
+![Celery](https://img.shields.io/badge/Celery-37814A?style=flat-square&logo=celery&logoColor=white)
+![APScheduler](https://img.shields.io/badge/APScheduler-2E7D32?style=flat-square)
+![Gin](https://img.shields.io/badge/Gin-00ADD8?style=flat-square&logo=gin&logoColor=white)
+
+FastAPI + 全异步 SQLAlchemy 承载业务 API · Alembic 管生产库迁移 · Celery 跑长任务、APScheduler 跑定时任务 · 四层架构 controller → service → dao → entity · OAuth2 + JWT + RBAC 三级权限
 
 **前端 · 中后台界面**
 
@@ -99,12 +118,25 @@ Vue 3 组合式 API 快速交付管理界面 · Vite 构建 · Pinia 管状态 �
 
 **数据与检索 · 存储与知识库**
 
-![MySQL](https://img.shields.io/badge/MySQL_8-4479A1?style=flat-square&logo=mysql&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
-![Elasticsearch](https://img.shields.io/badge/Elasticsearch_9-005571?style=flat-square&logo=elasticsearch&logoColor=white)
+![Elasticsearch](https://img.shields.io/badge/Elasticsearch-005571?style=flat-square&logo=elasticsearch&logoColor=white)
+![Milvus](https://img.shields.io/badge/Milvus-00A1EA?style=flat-square)
 ![MinIO](https://img.shields.io/badge/MinIO%2FS3-C72E49?style=flat-square&logo=minio&logoColor=white)
 
-MySQL 存业务数据 · Redis 扛缓存、登录态与任务队列 · Elasticsearch 做知识库混合检索 · MinIO/S3 统一文件存储（存储层已做接口抽象，可替换实现）
+MySQL / PostgreSQL 存业务数据 · Redis 兼做缓存、登录态、任务队列与 Stream · Elasticsearch 做全文与混合检索 · Milvus 做向量检索与语义重排 · MinIO/S3 统一文件存储（存储层已做接口抽象，可替换实现）
+
+**AI、文档与自动化**
+
+![PaddleOCR](https://img.shields.io/badge/PaddleOCR_PPStructureV3-0EA5E9?style=flat-square)
+![Qwen-VL](https://img.shields.io/badge/Qwen--VL-615CED?style=flat-square)
+![DeepSeek](https://img.shields.io/badge/DeepSeek_API-4D6BFE?style=flat-square)
+![RAG](https://img.shields.io/badge/RAG-%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2-6E56CF?style=flat-square)
+![MCP](https://img.shields.io/badge/MCP-1F1F1F?style=flat-square)
+![CDP](https://img.shields.io/badge/Chrome_DevTools_Protocol-4285F4?style=flat-square&logo=googlechrome&logoColor=white)
+
+PPStructureV3 版面解析 + 多模态大模型理解嵌入图像，把 PDF／扫描件转成结构化 Markdown · 多模型统一编排，含重试与随机回退 · MCP 可插拔能力扩展 · CDP 驱动真实 Chrome
 
 **交付与运维 · 从开发到离线部署**
 
@@ -114,15 +146,6 @@ MySQL 存业务数据 · Redis 扛缓存、登录态与任务队列 · Elasticse
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black)
 
 Docker Compose 打包整套服务 · Nginx 托管前端并反代后端 · GitHub Actions 做 CI 与 tag 触发发布 · 含**内网离线部署**方案
-
-**AI 与自动化**
-
-![RAG](https://img.shields.io/badge/RAG-%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2-6E56CF?style=flat-square)
-![OCR](https://img.shields.io/badge/OCR-%E8%A1%A8%E6%A0%BC%E7%BB%93%E6%9E%84%E5%8C%96-0EA5E9?style=flat-square)
-![DeepSeek](https://img.shields.io/badge/DeepSeek_API-4D6BFE?style=flat-square)
-![CDP](https://img.shields.io/badge/Chrome_DevTools_Protocol-4285F4?style=flat-square&logo=googlechrome&logoColor=white)
-
-RAG 混合检索 · 表格 OCR 结构化 · 对接大模型 API 并处理重试、限流与结果校验 · 基于 CDP 驱动真实 Chrome
 
 ---
 
