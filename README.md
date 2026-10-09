@@ -86,6 +86,12 @@ Demo 三天能跑通，进生产要三个月 —— 中间隔着数据管道、�
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black)
 ![CDP](https://img.shields.io/badge/Chrome_DevTools_Protocol-4285F4?style=flat-square&logo=googlechrome&logoColor=white)
 
+它们不是清单，实际项目里通常这样组合：FastAPI 出业务 API，SQLAlchemy 全异步读写，
+Celery 跑文档解析这类长任务；Vue 3 + Element Plus 出中后台；
+MySQL 存业务，Elasticsearch 和 Milvus 分管全文与向量检索，MinIO 收文件。
+最后 Docker Compose 打包、Nginx 托管反代、Actions 做 CI 与 tag 发布 ——
+交付到客户内网时，整套离线跑起来。
+
 ---
 
 ### 落地场景
